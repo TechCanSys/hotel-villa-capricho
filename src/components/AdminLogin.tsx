@@ -41,7 +41,7 @@ const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
         throw profileError;
       }
       
-      if (profileData.role !== 'admin') {
+      if (profileData?.role !== 'admin') {
         throw new Error('Unauthorized: Admin access required');
       }
       

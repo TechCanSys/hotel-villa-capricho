@@ -28,7 +28,7 @@ const AdminDashboard = () => {
         throw roomsError;
       }
       
-      setRooms(roomsData || []);
+      setRooms(roomsData as Room[] || []);
       
       // Load services
       const { data: servicesData, error: servicesError } = await supabase
@@ -39,7 +39,7 @@ const AdminDashboard = () => {
         throw servicesError;
       }
       
-      setServices(servicesData || []);
+      setServices(servicesData as Service[] || []);
     } catch (error: any) {
       toast({
         title: "Erro ao carregar dados",
