@@ -9,72 +9,7 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      rooms: {
-        Row: {
-          amenities: string[] | null
-          capacity: number
-          created_at: string | null
-          description: string
-          id: string
-          image_url: string
-          is_available: boolean | null
-          name: string
-          price: number
-        }
-        Insert: {
-          amenities?: string[] | null
-          capacity: number
-          created_at?: string | null
-          description: string
-          id?: string
-          image_url: string
-          is_available?: boolean | null
-          name: string
-          price: number
-        }
-        Update: {
-          amenities?: string[] | null
-          capacity?: number
-          created_at?: string | null
-          description?: string
-          id?: string
-          image_url?: string
-          is_available?: boolean | null
-          name?: string
-          price?: number
-        }
-        Relationships: []
-      }
-      services: {
-        Row: {
-          created_at: string | null
-          description: string
-          id: string
-          image_url: string
-          is_active: boolean | null
-          name: string
-          price: number
-        }
-        Insert: {
-          created_at?: string | null
-          description: string
-          id?: string
-          image_url: string
-          is_active?: boolean | null
-          name: string
-          price: number
-        }
-        Update: {
-          created_at?: string | null
-          description?: string
-          id?: string
-          image_url?: string
-          is_active?: boolean | null
-          name?: string
-          price?: number
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
