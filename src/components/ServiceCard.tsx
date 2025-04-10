@@ -2,7 +2,7 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Service } from "@/utils/types";
-import { Utensils, Spa, Delete, Edit, Pool, BellConcierge } from "lucide-react";
+import { Utensils, Leaf, Delete, Edit, Waves, Bell } from "lucide-react";
 
 interface ServiceCardProps {
   service: Service;
@@ -19,11 +19,11 @@ const ServiceCard = ({ service, isAdmin = false, onEdit, onDelete }: ServiceCard
       case 'utensils':
         return <Utensils size={32} />;
       case 'spa':
-        return <Spa size={32} />;
+        return <Leaf size={32} />;  // Changed from Spa to Leaf
       case 'pool':
-        return <Pool size={32} />;
+        return <Waves size={32} />;  // Changed from Pool to Waves
       case 'concierge-bell':
-        return <BellConcierge size={32} />;
+        return <Bell size={32} />;  // Changed from BellConcierge to Bell
       default:
         return null;
     }

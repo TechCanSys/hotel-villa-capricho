@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Hero from "@/components/Hero";
@@ -9,14 +8,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getRooms, getServices } from "@/utils/storage";
 import RoomCard from "@/components/RoomCard";
 import ServiceCard from "@/components/ServiceCard";
-import { Bed, Star, Phone, MapPin, Gem } from "lucide-react";
+import { Bed, Star, Phone, MapPin, Gem, Mail } from "lucide-react";
 
 const Index = () => {
   const [featuredRooms, setFeaturedRooms] = useState([]);
   const [featuredServices, setFeaturedServices] = useState([]);
 
   useEffect(() => {
-    // Get featured rooms and services
     const rooms = getRooms();
     const services = getServices();
     
