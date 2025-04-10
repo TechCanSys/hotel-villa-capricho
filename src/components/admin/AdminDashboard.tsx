@@ -50,6 +50,30 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     loadData();
+    
+    // Configurar subscriptions para atualizações em tempo real
+    const roomsSubscription = supabase
+      .channel('rooms_changes')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'rooms'
+      }, () => loadData())
+      .subscribe();
+    
+    const servicesSubscription = supabase
+      .channel('services_changes')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'services'
+      }, () => loadData())
+      .subscribe();
+    
+    return () => {
+      supabase.removeChannel(roomsSubscription);
+      supabase.removeChannel(servicesSubscription);
+    };
   }, []);
 
   const loadData = async () => {
@@ -64,7 +88,13 @@ const AdminDashboard = () => {
         throw roomsError;
       }
       
-      setRooms(roomsData || []);
+      const roomsWithDefaults = (roomsData || []).map(room => ({
+        ...room,
+        promotion: 'promotion' in room ? Boolean(room.promotion) : false,
+        promotionType: 'promotionType' in room ? String(room.promotionType) : null
+      }));
+      
+      setRooms(roomsWithDefaults as Room[]);
       
       // Load services
       const { data: servicesData, error: servicesError } = await supabase
@@ -75,7 +105,13 @@ const AdminDashboard = () => {
         throw servicesError;
       }
       
-      setServices(servicesData || []);
+      const servicesWithDefaults = (servicesData || []).map(service => ({
+        ...service,
+        promotion: 'promotion' in service ? Boolean(service.promotion) : false,
+        promotionType: 'promotionType' in service ? String(service.promotionType) : null
+      }));
+      
+      setServices(servicesWithDefaults as Service[]);
     } catch (error: any) {
       toast({
         title: "Erro ao carregar dados",
