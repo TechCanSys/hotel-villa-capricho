@@ -33,7 +33,7 @@ const RoomCard = ({ room, isAdmin = false, onEdit, onDelete }: RoomCardProps) =>
         <div className="flex justify-between items-start mb-2">
           <h3 className="text-xl font-serif font-bold text-navy">{name}</h3>
           <span className="text-gold font-bold">
-            R${price}<span className="text-sm text-gray-500">/noite</span>
+            {price} MZN<span className="text-sm text-gray-500">/noite</span>
           </span>
         </div>
         

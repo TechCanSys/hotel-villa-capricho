@@ -1,0 +1,49 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Hotel",
+  "name": "Hotel Villa Capricho",
+  "description": "O Hotel Villa Capricho oferece acomodações de luxo em Guarapari, ES. Desfrute de quartos confortáveis, serviços de alta qualidade e localização privilegiada à beira-mar.",
+  "url": "https://hotelvillacapricho.com",
+  "image": "https://lovable.dev/opengraph-image-p98pqg.png",
+  "priceRange": "MZN",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Avenida Beira Mar",
+    "addressLocality": "Guarapari",
+    "addressRegion": "ES",
+    "postalCode": "29200-000",
+    "addressCountry": "BR"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": -20.6720,
+    "longitude": -40.4975
+  },
+  "telephone": "+55 27 3333-4444",
+  "starRating": {
+    "@type": "Rating",
+    "ratingValue": "5"
+  },
+  "amenityFeature": [
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Wi-Fi",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Piscina",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Restaurante",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Estacionamento",
+      "value": true
+    }
+  ]
+}

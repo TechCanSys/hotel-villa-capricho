@@ -99,7 +99,7 @@ const RoomDetail = () => {
               <div className="flex justify-between items-start mb-4">
                 <h1 className="text-3xl font-serif font-bold text-navy">{room.name}</h1>
                 <div className="text-gold font-bold text-2xl">
-                  R${room.price}<span className="text-sm text-gray-500">/noite</span>
+                  {room.price} MZN<span className="text-sm text-gray-500">/noite</span>
                 </div>
               </div>
               

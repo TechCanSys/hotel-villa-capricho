@@ -95,7 +95,7 @@ const Rooms = () => {
                 <ul className="list-disc pl-5 space-y-2 text-gray-700">
                   <li>Check-in a partir das 14:00 e check-out até as 12:00</li>
                   <li>É necessário apresentar documento de identidade com foto no check-in</li>
-                  <li>Caução de R$200 pode ser exigido na chegada (reembolsável)</li>
+                  <li>Caução de 12.500 MZN pode ser exigido na chegada (reembolsável)</li>
                   <li>Reservas devem ser feitas com pelo menos 24 horas de antecedência</li>
                 </ul>
               </div>

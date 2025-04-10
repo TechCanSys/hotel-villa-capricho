@@ -69,7 +69,7 @@ const Services = () => {
                   Surpreenda seu parceiro(a) com um jantar romântico à luz de velas na praia, com menu exclusivo preparado por nossos chefs e serviço personalizado.
                 </p>
                 <div className="text-gold font-bold">
-                  A partir de R$350 por casal
+                  A partir de 22.000 MZN por casal
                 </div>
               </div>
             </div>
@@ -88,7 +88,7 @@ const Services = () => {
                   Um dia inteiro de relaxamento com pacote completo incluindo massagens, tratamentos faciais, acesso à sauna e piscinas térmicas.
                 </p>
                 <div className="text-gold font-bold">
-                  A partir de R$280 por pessoa
+                  A partir de 17.500 MZN por pessoa
                 </div>
               </div>
             </div>
@@ -107,7 +107,7 @@ const Services = () => {
                   Navegue pelas belas águas de Guarapari em um passeio exclusivo de barco, com paradas para mergulho e lanche a bordo.
                 </p>
                 <div className="text-gold font-bold">
-                  A partir de R$200 por pessoa
+                  A partir de 12.500 MZN por pessoa
                 </div>
               </div>
             </div>
@@ -126,7 +126,7 @@ const Services = () => {
                   Aprenda a preparar pratos da gastronomia capixaba com nosso chef premiado, seguido de degustação dos pratos preparados.
                 </p>
                 <div className="text-gold font-bold">
-                  A partir de R$180 por pessoa
+                  A partir de 11.200 MZN por pessoa
                 </div>
               </div>
             </div>
