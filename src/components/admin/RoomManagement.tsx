@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Room } from "@/utils/types";
 import { Button } from "@/components/ui/button";
@@ -61,17 +60,21 @@ const RoomManagement = ({ initialRooms }: RoomManagementProps) => {
   };
 
   const handleDeleteRoom = async (id: string) => {
+    console.log('Botão Excluir Quarto clicado para o ID:', id);
     if (window.confirm("Tem certeza que deseja excluir este quarto?")) {
       try {
+        console.log('Confirmação aceita, tentando excluir quarto');
         const { error } = await supabase
           .from('rooms')
           .delete()
           .eq('id', id);
         
         if (error) {
+          console.error('Erro ao excluir quarto:', error);
           throw error;
         }
         
+        console.log('Quarto excluído com sucesso, atualizando estado');
         setRooms(rooms.filter(room => room.id !== id));
         
         toast({
@@ -79,17 +82,22 @@ const RoomManagement = ({ initialRooms }: RoomManagementProps) => {
           description: "O quarto foi excluído com sucesso.",
         });
       } catch (error: any) {
+        console.error('Erro capturado ao excluir quarto:', error);
         toast({
           title: "Erro ao excluir quarto",
           description: error.message,
           variant: "destructive",
         });
       }
+    } else {
+      console.log('Exclusão cancelada pelo usuário');
     }
   };
 
+  // Add detailed logging for database operations
   const handleSaveRoom = async (room: Room) => {
     try {
+      console.log('Saving room:', room);
       if (room.id) {
         // Update existing room
         const { error } = await supabase
@@ -102,13 +110,17 @@ const RoomManagement = ({ initialRooms }: RoomManagementProps) => {
             amenities: room.amenities,
             images: room.images,
             featured: room.featured,
+            promotion: room.promotion,
+            promotionType: room.promotionType,
           })
           .eq('id', room.id);
         
         if (error) {
+          console.error('Error updating room:', error);
           throw error;
         }
         
+        console.log('Room updated successfully');
         setRooms(rooms.map(r => r.id === room.id ? room : r));
         
         toast({
@@ -127,14 +139,18 @@ const RoomManagement = ({ initialRooms }: RoomManagementProps) => {
             amenities: room.amenities,
             images: room.images,
             featured: room.featured,
+            promotion: room.promotion,
+            promotionType: room.promotionType,
           })
           .select()
           .single();
         
         if (error) {
+          console.error('Error creating room:', error);
           throw error;
         }
         
+        console.log('Room created successfully:', data);
         setRooms([...rooms, data]);
         
         toast({
@@ -145,6 +161,7 @@ const RoomManagement = ({ initialRooms }: RoomManagementProps) => {
       
       setRoomFormOpen(false);
     } catch (error: any) {
+      console.error('Error saving room:', error);
       toast({
         title: "Erro ao salvar quarto",
         description: error.message,
@@ -160,6 +177,7 @@ const RoomManagement = ({ initialRooms }: RoomManagementProps) => {
         <Button 
           onClick={handleAddRoom}
           className="bg-gold hover:bg-gold-dark text-white"
+          type="button"
         >
           <Plus className="mr-2 h-4 w-4" /> Adicionar Quarto
         </Button>

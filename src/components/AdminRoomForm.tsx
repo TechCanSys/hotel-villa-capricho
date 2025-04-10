@@ -26,14 +26,18 @@ const DEFAULT_ROOM: Room = {
   capacity: 1,
   amenities: [],
   images: ["/placeholder.svg"],
-  featured: false
+  featured: false,
+  promotion: false,
+  promotionType: ""
 };
 
 const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
+  console.log('AdminRoomForm renderizado com open:', open);
   const [formData, setFormData] = useState<Room>(DEFAULT_ROOM);
   const [amenityInput, setAmenityInput] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [showPromotionType, setShowPromotionType] = useState(false);
   
   const isEditing = !!room?.id;
   const title = isEditing ? "Editar Quarto" : "Adicionar Novo Quarto";
@@ -41,8 +45,10 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
   useEffect(() => {
     if (room) {
       setFormData(room);
+      setShowPromotionType(room.promotion || false);
     } else {
       setFormData(DEFAULT_ROOM);
+      setShowPromotionType(false);
     }
     setAmenityInput("");
     setImageUrl("");
@@ -56,11 +62,15 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
     }));
   };
 
-  const handleSwitchChange = (checked: boolean) => {
+  const handleSwitchChange = (name: string, checked: boolean) => {
     setFormData(prev => ({
       ...prev,
-      featured: checked
+      [name]: checked
     }));
+    
+    if (name === 'promotion') {
+      setShowPromotionType(checked);
+    }
   };
 
   const addAmenity = () => {
@@ -160,7 +170,10 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={open} onOpenChange={(isOpen) => {
+      console.log('Dialog onOpenChange:', isOpen);
+      if (!isOpen) onClose();
+    }}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
@@ -321,10 +334,32 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
               <Switch
                 id="featured"
                 checked={formData.featured}
-                onCheckedChange={handleSwitchChange}
+                onCheckedChange={(checked) => handleSwitchChange('featured', checked)}
               />
               <Label htmlFor="featured">Quarto em Destaque</Label>
             </div>
+            
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="promotion"
+                checked={formData.promotion}
+                onCheckedChange={(checked) => handleSwitchChange('promotion', checked)}
+              />
+              <Label htmlFor="promotion">Quarto em Promoção</Label>
+            </div>
+            
+            {showPromotionType && (
+              <div className="grid grid-cols-1 gap-2">
+                <Label htmlFor="promotionType">Tipo de Promoção</Label>
+                <Input
+                  id="promotionType"
+                  name="promotionType"
+                  value={formData.promotionType}
+                  onChange={handleChange}
+                  placeholder="Ex: Verão, Férias, Feriado, etc."
+                />
+              </div>
+            )}
           </div>
           
           <DialogFooter>

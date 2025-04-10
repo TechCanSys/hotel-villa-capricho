@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Service } from "@/utils/types";
 import { Button } from "@/components/ui/button";
@@ -88,8 +87,10 @@ const ServiceManagement = ({ initialServices }: ServiceManagementProps) => {
     }
   };
 
+  // Add detailed logging for database operations
   const handleSaveService = async (service: Service) => {
     try {
+      console.log('Saving service:', service);
       if (service.id) {
         // Update existing service
         const { error } = await supabase
@@ -100,13 +101,17 @@ const ServiceManagement = ({ initialServices }: ServiceManagementProps) => {
             icon: service.icon,
             featured: service.featured,
             images: service.images,
+            promotion: service.promotion,
+            promotionType: service.promotionType,
           })
           .eq('id', service.id);
         
         if (error) {
+          console.error('Error updating service:', error);
           throw error;
         }
         
+        console.log('Service updated successfully');
         setServices(services.map(s => s.id === service.id ? service : s));
         
         toast({
@@ -123,14 +128,18 @@ const ServiceManagement = ({ initialServices }: ServiceManagementProps) => {
             icon: service.icon,
             featured: service.featured,
             images: service.images,
+            promotion: service.promotion,
+            promotionType: service.promotionType,
           })
           .select()
           .single();
         
         if (error) {
+          console.error('Error creating service:', error);
           throw error;
         }
         
+        console.log('Service created successfully:', data);
         setServices([...services, data]);
         
         toast({
@@ -141,6 +150,7 @@ const ServiceManagement = ({ initialServices }: ServiceManagementProps) => {
       
       setServiceFormOpen(false);
     } catch (error: any) {
+      console.error('Error saving service:', error);
       toast({
         title: "Erro ao salvar serviço",
         description: error.message,

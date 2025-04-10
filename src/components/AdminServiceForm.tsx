@@ -25,7 +25,9 @@ const DEFAULT_SERVICE: Service = {
   description: "",
   icon: "utensils",
   featured: false,
-  images: []
+  images: [],
+  promotion: false,
+  promotionType: ""
 };
 
 const ICON_OPTIONS = [
@@ -39,6 +41,7 @@ const AdminServiceForm = ({ service, open, onClose, onSave }: AdminServiceFormPr
   const [formData, setFormData] = useState<Service>(DEFAULT_SERVICE);
   const [imageUrl, setImageUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [showPromotionType, setShowPromotionType] = useState(false);
   
   const isEditing = !!service?.id;
   const title = isEditing ? "Editar Serviço" : "Adicionar Novo Serviço";
@@ -46,8 +49,10 @@ const AdminServiceForm = ({ service, open, onClose, onSave }: AdminServiceFormPr
   useEffect(() => {
     if (service) {
       setFormData(service);
+      setShowPromotionType(service.promotion || false);
     } else {
       setFormData(DEFAULT_SERVICE);
+      setShowPromotionType(false);
     }
     setImageUrl("");
   }, [service]);
@@ -67,11 +72,15 @@ const AdminServiceForm = ({ service, open, onClose, onSave }: AdminServiceFormPr
     }));
   };
 
-  const handleSwitchChange = (checked: boolean) => {
+  const handleSwitchChange = (name: string, checked: boolean) => {
     setFormData(prev => ({
       ...prev,
-      featured: checked
+      [name]: checked
     }));
+    
+    if (name === 'promotion') {
+      setShowPromotionType(checked);
+    }
   };
 
   const addImageUrl = () => {
@@ -275,10 +284,32 @@ const AdminServiceForm = ({ service, open, onClose, onSave }: AdminServiceFormPr
               <Switch
                 id="featured"
                 checked={formData.featured}
-                onCheckedChange={handleSwitchChange}
+                onCheckedChange={(checked) => handleSwitchChange('featured', checked)}
               />
               <Label htmlFor="featured">Serviço em Destaque</Label>
             </div>
+            
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="promotion"
+                checked={formData.promotion}
+                onCheckedChange={(checked) => handleSwitchChange('promotion', checked)}
+              />
+              <Label htmlFor="promotion">Serviço em Promoção</Label>
+            </div>
+            
+            {showPromotionType && (
+              <div className="grid grid-cols-1 gap-2">
+                <Label htmlFor="promotionType">Tipo de Promoção</Label>
+                <Input
+                  id="promotionType"
+                  name="promotionType"
+                  value={formData.promotionType}
+                  onChange={handleChange}
+                  placeholder="Ex: Verão, Férias, Feriado, etc."
+                />
+              </div>
+            )}
           </div>
           
           <DialogFooter>

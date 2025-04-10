@@ -8,6 +8,8 @@ export interface Room {
   amenities: string[];
   images: string[];
   featured: boolean;
+  promotion: boolean;
+  promotionType: string;
 }
 
 export interface Service {
@@ -17,6 +19,8 @@ export interface Service {
   icon: string; // String name of icon
   featured: boolean;
   images: string[]; // Added images array
+  promotion: boolean;
+  promotionType: string;
 }
 
 export interface AdminUser {
