@@ -3,14 +3,9 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Gallery from "@/components/Gallery";
+import ReservationForm from "@/components/ReservationForm";
 import { Button } from "@/components/ui/button";
-import { 
-  Carousel, 
-  CarouselContent, 
-  CarouselItem, 
-  CarouselPrevious, 
-  CarouselNext 
-} from "@/components/ui/carousel";
 import { getRoomById } from "@/utils/storage";
 import { Room } from "@/utils/types";
 import { ArrowLeft, Users, Bed, Coffee } from "lucide-react";
@@ -72,30 +67,16 @@ const RoomDetail = () => {
             </Link>
           </Button>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            <div>
-              <Carousel className="w-full">
-                <CarouselContent>
-                  {room.images.map((image, index) => (
-                    <CarouselItem key={index}>
-                      <div className="p-1 h-96">
-                        <img 
-                          src={image} 
-                          alt={`${room.name} - Imagem ${index + 1}`} 
-                          className="w-full h-full object-cover rounded-lg"
-                        />
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <div className="flex justify-center mt-2">
-                  <CarouselPrevious className="relative static transform-none mx-2" />
-                  <CarouselNext className="relative static transform-none mx-2" />
-                </div>
-              </Carousel>
-            </div>
-            
-            <div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            <div className="lg:col-span-2">
+              <div className="mb-6">
+                <Gallery 
+                  images={room.images} 
+                  alt={room.name} 
+                  height="h-[500px]"
+                />
+              </div>
+              
               <div className="flex justify-between items-start mb-4">
                 <h1 className="text-3xl font-serif font-bold text-navy">{room.name}</h1>
                 <div className="text-gold font-bold text-2xl">
@@ -129,15 +110,10 @@ const RoomDetail = () => {
                   ))}
                 </div>
               </div>
-              
-              <div className="mt-8">
-                <Button className="bg-gold hover:bg-gold-dark text-white w-full py-6 text-lg">
-                  Reservar Agora
-                </Button>
-                <p className="text-sm text-center text-gray-500 mt-2">
-                  Cancelamento gratuito até 48h antes do check-in
-                </p>
-              </div>
+            </div>
+            
+            <div>
+              <ReservationForm room={room} />
             </div>
           </div>
         </div>
