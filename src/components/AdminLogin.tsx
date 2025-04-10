@@ -3,44 +3,64 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { verifyAdminCredentials } from "@/utils/storage";
 import { toast } from "@/components/ui/use-toast";
 import { LockKeyhole } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AdminLoginProps {
   onLoginSuccess: () => void;
 }
 
 const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Small delay to simulate authentication
-    setTimeout(() => {
-      const isValid = verifyAdminCredentials(username, password);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
       
-      if (isValid) {
-        toast({
-          title: "Login bem-sucedido",
-          description: "Bem-vindo ao painel administrativo",
-          variant: "default",
-        });
-        onLoginSuccess();
-      } else {
-        toast({
-          title: "Falha na autenticação",
-          description: "Credenciais inválidas. Tente novamente.",
-          variant: "destructive",
-        });
+      if (error) {
+        throw error;
       }
       
+      // Check if user has admin role
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user?.id)
+        .single();
+        
+      if (profileError) {
+        throw profileError;
+      }
+      
+      if (profileData.role !== 'admin') {
+        throw new Error('Unauthorized: Admin access required');
+      }
+      
+      toast({
+        title: "Login bem-sucedido",
+        description: "Bem-vindo ao painel administrativo",
+        variant: "default",
+      });
+      
+      onLoginSuccess();
+    } catch (error: any) {
+      toast({
+        title: "Falha na autenticação",
+        description: error.message || "Credenciais inválidas. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -60,12 +80,13 @@ const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="username" className="text-sm font-medium">Usuário</label>
+              <label htmlFor="email" className="text-sm font-medium">Email</label>
               <Input
-                id="username"
-                placeholder="Digite seu nome de usuário"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                id="email"
+                type="email"
+                placeholder="Digite seu email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
@@ -80,7 +101,7 @@ const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
                 required
               />
               <p className="text-xs text-muted-foreground mt-1">
-                Default: admin / admin123
+                Utilize suas credenciais de administrador
               </p>
             </div>
             <Button 

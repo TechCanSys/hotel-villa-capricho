@@ -4,20 +4,60 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RoomManagement from "./RoomManagement";
 import ServiceManagement from "./ServiceManagement";
 import { Room, Service } from "@/utils/types";
-import { getRooms, getServices } from "@/utils/storage";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/components/ui/use-toast";
 
 const AdminDashboard = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadData();
   }, []);
 
-  const loadData = () => {
-    setRooms(getRooms());
-    setServices(getServices());
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      // Load rooms
+      const { data: roomsData, error: roomsError } = await supabase
+        .from('rooms')
+        .select('*');
+      
+      if (roomsError) {
+        throw roomsError;
+      }
+      
+      setRooms(roomsData || []);
+      
+      // Load services
+      const { data: servicesData, error: servicesError } = await supabase
+        .from('services')
+        .select('*');
+      
+      if (servicesError) {
+        throw servicesError;
+      }
+      
+      setServices(servicesData || []);
+    } catch (error: any) {
+      toast({
+        title: "Erro ao carregar dados",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 flex justify-center items-center" style={{ minHeight: "50vh" }}>
+        <div className="w-10 h-10 border-4 border-gold border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4">

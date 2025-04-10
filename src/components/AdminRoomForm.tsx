@@ -7,7 +7,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Room } from "@/utils/types";
-import { X, PlusCircle, Image } from "lucide-react";
+import { X, PlusCircle, Upload, Image } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/components/ui/use-toast";
 
 interface AdminRoomFormProps {
   room?: Room;
@@ -31,6 +33,7 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
   const [formData, setFormData] = useState<Room>(DEFAULT_ROOM);
   const [amenityInput, setAmenityInput] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
   
   const isEditing = !!room?.id;
   const title = isEditing ? "Editar Quarto" : "Adicionar Novo Quarto";
@@ -77,13 +80,67 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
     }));
   };
 
-  const addImage = () => {
+  const addImageUrl = () => {
     if (imageUrl.trim()) {
       setFormData(prev => ({
         ...prev,
         images: [...prev.images, imageUrl.trim()]
       }));
       setImageUrl("");
+    }
+  };
+
+  const uploadImage = async (file: File) => {
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      
+      // Generate a unique file name
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+      const filePath = `rooms/${fileName}`;
+      
+      // Upload to Supabase Storage
+      const { error: uploadError } = await supabase.storage
+        .from('images')
+        .upload(filePath, file);
+      
+      if (uploadError) {
+        throw uploadError;
+      }
+      
+      // Get the public URL
+      const { data } = supabase.storage
+        .from('images')
+        .getPublicUrl(filePath);
+      
+      // Add to images array
+      if (data) {
+        setFormData(prev => ({
+          ...prev,
+          images: [...prev.images, data.publicUrl]
+        }));
+      }
+      
+      toast({
+        title: "Imagem carregada",
+        description: "A imagem foi carregada com sucesso.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Erro ao carregar imagem",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+  
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      uploadImage(e.target.files[0]);
     }
   };
 
@@ -198,6 +255,8 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
 
             <div>
               <Label>Imagens</Label>
+
+              {/* URL input */}
               <div className="flex mt-2">
                 <Input
                   value={imageUrl}
@@ -207,11 +266,31 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
                 />
                 <Button 
                   type="button" 
-                  onClick={addImage}
+                  onClick={addImageUrl}
                   className="ml-2 bg-gold hover:bg-gold-dark"
                 >
-                  <PlusCircle className="w-4 h-4 mr-2" /> Adicionar
+                  <PlusCircle className="w-4 h-4 mr-2" /> Adicionar URL
                 </Button>
+              </div>
+
+              {/* File upload */}
+              <div className="mt-2">
+                <Label htmlFor="image-upload" className="block w-full cursor-pointer">
+                  <div className="border-2 border-dashed border-gray-300 rounded-md p-4 text-center hover:border-gray-400 transition-colors">
+                    <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                    <span className="mt-2 block text-sm text-gray-600">
+                      {isUploading ? "Carregando..." : "Clique para carregar uma imagem"}
+                    </span>
+                  </div>
+                  <Input
+                    id="image-upload"
+                    type="file"
+                    accept="image/*"
+                    className="sr-only"
+                    onChange={handleFileChange}
+                    disabled={isUploading}
+                  />
+                </Label>
               </div>
               
               <div className="grid grid-cols-2 gap-3 mt-3">
@@ -252,7 +331,7 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
             <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
             </Button>
-            <Button type="submit" className="bg-gold hover:bg-gold-dark">
+            <Button type="submit" className="bg-gold hover:bg-gold-dark" disabled={isUploading}>
               {isEditing ? "Atualizar" : "Adicionar"} Quarto
             </Button>
           </DialogFooter>
