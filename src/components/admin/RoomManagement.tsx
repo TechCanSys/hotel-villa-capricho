@@ -35,7 +35,7 @@ const RoomManagement = ({ initialRooms }: RoomManagementProps) => {
         throw error;
       }
       
-      setRooms(data as Room[] || []);
+      setRooms(data || []);
     } catch (error: any) {
       toast({
         title: "Erro ao carregar quartos",
@@ -119,7 +119,7 @@ const RoomManagement = ({ initialRooms }: RoomManagementProps) => {
         // Create new room
         const { data, error } = await supabase
           .from('rooms')
-          .insert([{
+          .insert({
             name: room.name,
             description: room.description,
             price: room.price,
@@ -127,7 +127,7 @@ const RoomManagement = ({ initialRooms }: RoomManagementProps) => {
             amenities: room.amenities,
             images: room.images,
             featured: room.featured,
-          }])
+          })
           .select()
           .single();
         
@@ -135,7 +135,7 @@ const RoomManagement = ({ initialRooms }: RoomManagementProps) => {
           throw error;
         }
         
-        setRooms([...rooms, data as Room]);
+        setRooms([...rooms, data]);
         
         toast({
           title: "Quarto adicionado",

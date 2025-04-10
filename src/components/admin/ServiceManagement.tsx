@@ -35,7 +35,7 @@ const ServiceManagement = ({ initialServices }: ServiceManagementProps) => {
         throw error;
       }
       
-      setServices(data as Service[] || []);
+      setServices(data || []);
     } catch (error: any) {
       toast({
         title: "Erro ao carregar serviços",
@@ -117,13 +117,13 @@ const ServiceManagement = ({ initialServices }: ServiceManagementProps) => {
         // Create new service
         const { data, error } = await supabase
           .from('services')
-          .insert([{
+          .insert({
             name: service.name,
             description: service.description,
             icon: service.icon,
             featured: service.featured,
             images: service.images,
-          }])
+          })
           .select()
           .single();
         
@@ -131,7 +131,7 @@ const ServiceManagement = ({ initialServices }: ServiceManagementProps) => {
           throw error;
         }
         
-        setServices([...services, data as Service]);
+        setServices([...services, data]);
         
         toast({
           title: "Serviço adicionado",

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -53,7 +52,7 @@ const Admin = () => {
         throw profileError;
       }
       
-      if (profileData?.role === 'admin') {
+      if (profileData.role === 'admin') {
         setIsAuthenticated(true);
       } else {
         setIsAuthenticated(false);

@@ -1,6 +1,1 @@
-
 project_id = "ghstvcigcxyjmadrryre"
-
-[functions.send-reservation]
-verify_jwt = true
-
