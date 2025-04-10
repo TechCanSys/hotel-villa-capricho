@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Service } from "@/utils/types";
+import { X, PlusCircle, Image } from "lucide-react";
 
 interface AdminServiceFormProps {
   service?: Service;
@@ -21,7 +22,8 @@ const DEFAULT_SERVICE: Service = {
   name: "",
   description: "",
   icon: "utensils",
-  featured: false
+  featured: false,
+  images: []
 };
 
 const ICON_OPTIONS = [
@@ -33,6 +35,7 @@ const ICON_OPTIONS = [
 
 const AdminServiceForm = ({ service, open, onClose, onSave }: AdminServiceFormProps) => {
   const [formData, setFormData] = useState<Service>(DEFAULT_SERVICE);
+  const [imageUrl, setImageUrl] = useState("");
   
   const isEditing = !!service?.id;
   const title = isEditing ? "Editar Serviço" : "Adicionar Novo Serviço";
@@ -43,6 +46,7 @@ const AdminServiceForm = ({ service, open, onClose, onSave }: AdminServiceFormPr
     } else {
       setFormData(DEFAULT_SERVICE);
     }
+    setImageUrl("");
   }, [service]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -67,6 +71,23 @@ const AdminServiceForm = ({ service, open, onClose, onSave }: AdminServiceFormPr
     }));
   };
 
+  const addImage = () => {
+    if (imageUrl.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        images: [...(prev.images || []), imageUrl.trim()]
+      }));
+      setImageUrl("");
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images?.filter((_, i) => i !== index) || []
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(formData);
@@ -74,7 +95,7 @@ const AdminServiceForm = ({ service, open, onClose, onSave }: AdminServiceFormPr
 
   return (
     <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle className="font-serif text-xl">{title}</DialogTitle>
@@ -121,6 +142,54 @@ const AdminServiceForm = ({ service, open, onClose, onSave }: AdminServiceFormPr
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+            
+            <div>
+              <Label>Imagens</Label>
+              <div className="flex mt-2">
+                <Input
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  placeholder="URL da imagem"
+                  className="flex-1"
+                />
+                <Button 
+                  type="button" 
+                  onClick={addImage}
+                  className="ml-2 bg-gold hover:bg-gold-dark"
+                >
+                  <PlusCircle className="w-4 h-4 mr-2" /> Adicionar
+                </Button>
+              </div>
+              
+              {formData.images && formData.images.length > 0 ? (
+                <div className="grid grid-cols-2 gap-3 mt-3">
+                  {formData.images.map((image, index) => (
+                    <div key={index} className="relative group">
+                      <img 
+                        src={image} 
+                        alt={`Imagem ${index + 1}`} 
+                        className="w-full h-20 object-cover rounded-md"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = '/placeholder.svg';
+                        }}
+                      />
+                      <button
+                        type="button"
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => removeImage(index)}
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-20 bg-gray-100 rounded-md mt-3">
+                  <Image className="w-6 h-6 text-gray-400 mr-2" />
+                  <span className="text-gray-500">Nenhuma imagem adicionada</span>
+                </div>
+              )}
             </div>
             
             <div className="flex items-center space-x-2">

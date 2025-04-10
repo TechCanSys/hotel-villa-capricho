@@ -1,12 +1,13 @@
 
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Room } from "@/utils/types";
+import { X, PlusCircle, Image } from "lucide-react";
 
 interface AdminRoomFormProps {
   room?: Room;
@@ -29,6 +30,7 @@ const DEFAULT_ROOM: Room = {
 const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
   const [formData, setFormData] = useState<Room>(DEFAULT_ROOM);
   const [amenityInput, setAmenityInput] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   
   const isEditing = !!room?.id;
   const title = isEditing ? "Editar Quarto" : "Adicionar Novo Quarto";
@@ -39,6 +41,8 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
     } else {
       setFormData(DEFAULT_ROOM);
     }
+    setAmenityInput("");
+    setImageUrl("");
   }, [room]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -73,6 +77,26 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
     }));
   };
 
+  const addImage = () => {
+    if (imageUrl.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        images: [...prev.images, imageUrl.trim()]
+      }));
+      setImageUrl("");
+    }
+  };
+
+  const removeImage = (index: number) => {
+    // Prevent removing all images
+    if (formData.images.length > 1) {
+      setFormData(prev => ({
+        ...prev,
+        images: prev.images.filter((_, i) => i !== index)
+      }));
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(formData);
@@ -80,7 +104,7 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
 
   return (
     <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle className="font-serif text-xl">{title}</DialogTitle>
@@ -152,7 +176,7 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
                   onClick={addAmenity}
                   className="ml-2 bg-gold hover:bg-gold-dark"
                 >
-                  Adicionar
+                  <PlusCircle className="w-4 h-4 mr-2" /> Adicionar
                 </Button>
               </div>
               
@@ -166,6 +190,48 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
                       onClick={() => removeAmenity(index)}
                     >
                       &times;
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <Label>Imagens</Label>
+              <div className="flex mt-2">
+                <Input
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  placeholder="URL da imagem"
+                  className="flex-1"
+                />
+                <Button 
+                  type="button" 
+                  onClick={addImage}
+                  className="ml-2 bg-gold hover:bg-gold-dark"
+                >
+                  <PlusCircle className="w-4 h-4 mr-2" /> Adicionar
+                </Button>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-3 mt-3">
+                {formData.images.map((image, index) => (
+                  <div key={index} className="relative group">
+                    <img 
+                      src={image} 
+                      alt={`Imagem ${index + 1}`} 
+                      className="w-full h-20 object-cover rounded-md"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '/placeholder.svg';
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => removeImage(index)}
+                      disabled={formData.images.length <= 1}
+                    >
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
                 ))}

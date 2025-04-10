@@ -16,6 +16,7 @@ export interface Service {
   description: string;
   icon: string; // String name of icon
   featured: boolean;
+  images: string[]; // Added images array
 }
 
 export interface AdminUser {

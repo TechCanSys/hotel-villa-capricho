@@ -16,7 +16,7 @@ const DEFAULT_ROOMS: Room[] = [
     price: 450,
     capacity: 2,
     amenities: ['Cama King Size', 'Jacuzzi', 'Varanda', 'Minibar', 'TV 50"'],
-    images: ['/placeholder.svg'],
+    images: ['/placeholder.svg', '/placeholder.svg'],
     featured: true
   },
   {
@@ -48,28 +48,32 @@ const DEFAULT_SERVICES: Service[] = [
     name: 'Restaurante Gourmet',
     description: 'Saboreie pratos requintados da culinária internacional preparados por nossos chefs.',
     icon: 'utensils',
-    featured: true
+    featured: true,
+    images: ['/placeholder.svg', '/placeholder.svg']
   },
   {
     id: '2',
     name: 'Spa & Bem-estar',
     description: 'Relaxe com nossos tratamentos de spa e massagens terapêuticas.',
     icon: 'spa',
-    featured: true
+    featured: true,
+    images: ['/placeholder.svg']
   },
   {
     id: '3',
     name: 'Piscina Aquecida',
     description: 'Aproveite nossa piscina aquecida com bar molhado e espreguiçadeiras.',
     icon: 'pool',
-    featured: true
+    featured: true,
+    images: []
   },
   {
     id: '4',
     name: 'Concierge 24h',
     description: 'Nosso serviço de concierge está disponível 24 horas para atender suas necessidades.',
     icon: 'concierge-bell',
-    featured: false
+    featured: false,
+    images: []
   },
 ];
 
@@ -159,3 +163,4 @@ export const deleteService = (id: string) => {
   localStorage.setItem('services', JSON.stringify(updatedServices));
   return updatedServices;
 };
+
