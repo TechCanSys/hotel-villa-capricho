@@ -7,8 +7,10 @@ import Services from "@/pages/Services";
 import ServiceDetail from "@/pages/ServiceDetail";
 import Contact from "@/pages/Contact";
 import Admin from "@/pages/Admin";
+import AdminDashboardPage from "@/pages/AdminDashboardPage";
 import NotFound from "@/pages/NotFound";
 import { Toaster } from "@/components/ui/sonner";
+import AdminRoute from "@/components/AdminRoute";
 import "./App.css";
 
 function App() {
@@ -22,6 +24,7 @@ function App() {
         <Route path="/servicos/:id" element={<ServiceDetail />} />
         <Route path="/contato" element={<Contact />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />

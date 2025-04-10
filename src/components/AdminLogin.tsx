@@ -52,6 +52,9 @@ const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
       });
       
       onLoginSuccess();
+      
+      // Redirecionar para o dashboard administrativo
+      window.location.href = '/admin/dashboard';
     } catch (error: any) {
       toast({
         title: "Falha na autenticação",

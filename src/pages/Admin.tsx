@@ -80,6 +80,7 @@ const Admin = () => {
 
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
+    // O redirecionamento agora é feito diretamente no componente AdminLogin
   };
 
   if (isLoading) {
