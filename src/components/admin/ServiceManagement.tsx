@@ -3,9 +3,9 @@ import { useState } from "react";
 import { Service } from "@/utils/types";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import AdminServiceForm from "@/components/AdminServiceForm";
 import ServiceList from "@/components/admin/ServiceList";
 import { useServiceManagement } from "@/hooks/useServiceManagement";
+import ServiceForm from "./service-form/ServiceForm";
 
 interface ServiceManagementProps {
   initialServices?: Service[];
@@ -49,7 +49,7 @@ const ServiceManagement = ({ initialServices }: ServiceManagementProps) => {
         onDelete={deleteService}
       />
       
-      <AdminServiceForm 
+      <ServiceForm 
         service={selectedService} 
         open={serviceFormOpen} 
         onClose={() => setServiceFormOpen(false)}
