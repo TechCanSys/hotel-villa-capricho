@@ -60,115 +60,56 @@ const RoomManagement = ({ initialRooms }: RoomManagementProps) => {
   };
 
   const handleDeleteRoom = async (id: string) => {
-    console.log('Botão Excluir Quarto clicado para o ID:', id);
-    if (window.confirm("Tem certeza que deseja excluir este quarto?")) {
-      try {
-        console.log('Confirmação aceita, tentando excluir quarto');
-        const { error } = await supabase
-          .from('rooms')
-          .delete()
-          .eq('id', id);
-        
-        if (error) {
-          console.error('Erro ao excluir quarto:', error);
-          throw error;
-        }
-        
-        console.log('Quarto excluído com sucesso, atualizando estado');
-        setRooms(rooms.filter(room => room.id !== id));
-        
-        toast({
-          title: "Quarto excluído",
-          description: "O quarto foi excluído com sucesso.",
-        });
-      } catch (error: any) {
-        console.error('Erro capturado ao excluir quarto:', error);
-        toast({
-          title: "Erro ao excluir quarto",
-          description: error.message,
-          variant: "destructive",
-        });
-      }
-    } else {
-      console.log('Exclusão cancelada pelo usuário');
+    if (!window.confirm("Are you sure?")) return;
+    
+    try {
+      const { error } = await supabase
+        .from('rooms')
+        .delete()
+        .eq('id', id);
+    
+      if (error) throw error;
+      
+      setRooms(rooms.filter(room => room.id !== id));
+      toast({ title: "Success", description: "Room deleted successfully" });
+    } catch (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
     }
   };
 
-  // Add detailed logging for database operations
   const handleSaveRoom = async (room: Room) => {
     try {
-      console.log('Saving room:', room);
       if (room.id) {
         // Update existing room
-        const { error } = await supabase
-          .from('rooms')
-          .update({
-            name: room.name,
-            description: room.description,
-            price: room.price,
-            capacity: room.capacity,
-            amenities: room.amenities,
-            images: room.images,
-            featured: room.featured,
-            promotion: room.promotion,
-            promotionType: room.promotionType,
-          })
-          .eq('id', room.id);
-        
-        if (error) {
-          console.error('Error updating room:', error);
-          throw error;
-        }
-        
-        console.log('Room updated successfully');
-        setRooms(rooms.map(r => r.id === room.id ? room : r));
-        
-        toast({
-          title: "Quarto atualizado",
-          description: "As alterações foram salvas com sucesso.",
-        });
-      } else {
-        // Create new room
         const { data, error } = await supabase
           .from('rooms')
-          .insert({
-            name: room.name,
-            description: room.description,
-            price: room.price,
-            capacity: room.capacity,
-            amenities: room.amenities,
-            images: room.images,
-            featured: room.featured,
-            promotion: room.promotion,
-            promotionType: room.promotionType,
-          })
+          .update(room)
+          .eq('id', room.id)
           .select()
           .single();
-        
-        if (error) {
-          console.error('Error creating room:', error);
-          throw error;
-        }
-        
-        console.log('Room created successfully:', data);
-        setRooms([...rooms, data]);
-        
-        toast({
-          title: "Quarto adicionado",
-          description: "O quarto foi adicionado com sucesso.",
-        });
-      }
       
-      setRoomFormOpen(false);
-    } catch (error: any) {
-      console.error('Error saving room:', error);
-      toast({
-        title: "Erro ao salvar quarto",
-        description: error.message,
-        variant: "destructive",
-      });
+      if (error) throw error;
+      
+      setRooms(rooms.map(r => r.id === room.id ? data : r));
+    } else {
+      // Create new room
+      const { data, error } = await supabase
+        .from('rooms')
+        .insert(room)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      
+      setRooms([...rooms, data]);
     }
-  };
+    
+    toast({ title: "Success", description: "Room saved successfully" });
+    setRoomFormOpen(false);
+  } catch (error) {
+    toast({ title: "Error", description: error.message, variant: "destructive" });
+  }
+};
 
   return (
     <>

@@ -164,9 +164,29 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    
+    try {
+      // Validate required fields
+      if (!formData.name || !formData.description || !formData.price || !formData.capacity) {
+        throw new Error("Por favor, preencha todos os campos obrigatórios");
+      }
+  
+      // Call the onSave prop with the form data
+      onSave(formData);
+      
+      // Reset form after successful save
+      setFormData(DEFAULT_ROOM);
+      onClose();
+      
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -206,13 +226,13 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
             
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="price">Preço por Noite (R$)*</Label>
+                <Label htmlFor="price">Preço por Noite (MZN)*</Label>
                 <Input
                   id="price"
                   name="price"
                   type="number"
                   min="0"
-                  step="0.01"
+                  step="0.00"
                   value={formData.price}
                   onChange={handleChange}
                   required
@@ -363,10 +383,26 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
           </div>
           
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => {
+                console.log('Cancel button clicked');
+                onClose();
+              }}
+              disabled={isUploading}
+            >
               Cancelar
             </Button>
-            <Button type="submit" className="bg-gold hover:bg-gold-dark" disabled={isUploading}>
+            <Button 
+              type="submit" 
+              className="bg-gold hover:bg-gold-dark" 
+              disabled={isUploading || !formData.name || !formData.description || !formData.price || !formData.capacity}
+              onClick={(e) => {
+                console.log('Save button clicked', formData);
+                handleSubmit(e);
+              }}
+            >
               {isEditing ? "Atualizar" : "Adicionar"} Quarto
             </Button>
           </DialogFooter>

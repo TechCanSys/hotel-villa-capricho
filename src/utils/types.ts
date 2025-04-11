@@ -8,19 +8,23 @@ export interface Room {
   amenities: string[];
   images: string[];
   featured: boolean;
-  promotion: boolean;
-  promotionType: string;
+  created_at?: string;
+  updated_at?: string;
+  promotion?: boolean;      // Make optional if not always present
+  promotionType?: string;   // Make optional if not always present
 }
 
 export interface Service {
   id: string;
   name: string;
   description: string;
-  icon: string; // String name of icon
+  icon: string;
+  images: string[];
   featured: boolean;
-  images: string[]; // Added images array
-  promotion: boolean;
-  promotionType: string;
+  created_at: string;
+  updated_at: string;
+  promotion?: boolean;      // Make optional if not always present
+  promotionType?: string;  // Make optional if not always present
 }
 
 export interface AdminUser {

@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { getRooms, getServices } from "@/utils/storage";
+import { getRooms, getServices } from "../utils/storage";
 import RoomCard from "@/components/RoomCard";
 import ServiceCard from "@/components/ServiceCard";
 import { Bed, Star, Phone, MapPin, Gem, Mail } from "lucide-react";
@@ -15,11 +15,15 @@ const Index = () => {
   const [featuredServices, setFeaturedServices] = useState([]);
 
   useEffect(() => {
-    const rooms = getRooms();
-    const services = getServices();
+    const fetchData = async () => {
+      const rooms = await getRooms();
+      const services = await getServices();
+      
+      setFeaturedRooms(rooms.filter(room => room.featured).slice(0, 3));
+      setFeaturedServices(services.filter(service => service.featured).slice(0, 3));
+    };
     
-    setFeaturedRooms(rooms.filter(room => room.featured).slice(0, 3));
-    setFeaturedServices(services.filter(service => service.featured).slice(0, 3));
+    fetchData();
   }, []);
 
   return (
