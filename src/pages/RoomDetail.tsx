@@ -14,6 +14,7 @@ import {
 import { getRoomById } from "@/utils/storage";
 import { Room } from "@/utils/types";
 import { ArrowLeft, Users, Bed, Coffee } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const RoomDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -21,11 +22,32 @@ const RoomDetail = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (id) {
-      const roomData = getRoomById(id);
-      setRoom(roomData || null);
-      setLoading(false);
+    async function loadRoom() {
+      if (id) {
+        setLoading(true);
+        try {
+          const { data, error } = await supabase
+            .from('rooms')
+            .select('*')
+            .eq('id', id)
+            .single();
+            
+          if (error) {
+            console.error('Error fetching room:', error);
+            setRoom(null);
+          } else {
+            setRoom(data as Room);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          setRoom(null);
+        } finally {
+          setLoading(false);
+        }
+      }
     }
+    
+    loadRoom();
   }, [id]);
 
   if (loading) {

@@ -13,22 +13,81 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string
-          role: Database["public"]["Enums"]["user_role"]
+          role: "admin" | "user"
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
           id: string
-          role?: Database["public"]["Enums"]["user_role"]
+          role?: "admin" | "user"
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
           id?: string
-          role?: Database["public"]["Enums"]["user_role"]
+          role?: "admin" | "user"
           updated_at?: string | null
         }
         Relationships: []
+      }
+      reservations: {
+        Row: {
+          check_in: string
+          check_out: string
+          created_at: string | null
+          email: string
+          guests: number
+          id: string
+          message: string | null
+          name: string
+          phone: string
+          price: number
+          room_id: string | null
+          room_name: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          check_in: string
+          check_out: string
+          created_at?: string | null
+          email: string
+          guests: number
+          id?: string
+          message?: string | null
+          name: string
+          phone: string
+          price: number
+          room_id?: string | null
+          room_name: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          check_in?: string
+          check_out?: string
+          created_at?: string | null
+          email?: string
+          guests?: number
+          id?: string
+          message?: string | null
+          name?: string
+          phone?: string
+          price?: number
+          room_id?: string | null
+          room_name?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservations_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       rooms: {
         Row: {
@@ -41,6 +100,8 @@ export type Database = {
           images: string[]
           name: string
           price: number
+          promotion: boolean
+          promotiontype: string | null
           updated_at: string | null
         }
         Insert: {
@@ -53,6 +114,8 @@ export type Database = {
           images?: string[]
           name: string
           price: number
+          promotion?: boolean
+          promotiontype?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -65,6 +128,8 @@ export type Database = {
           images?: string[]
           name?: string
           price?: number
+          promotion?: boolean
+          promotiontype?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -78,6 +143,8 @@ export type Database = {
           id: string
           images: string[]
           name: string
+          promotion: boolean
+          promotiontype: string | null
           updated_at: string | null
         }
         Insert: {
@@ -88,6 +155,8 @@ export type Database = {
           id?: string
           images?: string[]
           name: string
+          promotion?: boolean
+          promotiontype?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -98,6 +167,8 @@ export type Database = {
           id?: string
           images?: string[]
           name?: string
+          promotion?: boolean
+          promotiontype?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -113,7 +184,7 @@ export type Database = {
       }
     }
     Enums: {
-      user_role: "admin" | "user"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -228,8 +299,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      user_role: ["admin", "user"],
-    },
+    Enums: {},
   },
 } as const

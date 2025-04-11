@@ -24,10 +24,27 @@ export interface Service {
   created_at: string;
   updated_at: string;
   promotion?: boolean;      // Make optional if not always present
-  promotionType?: string;  // Make optional if not always present
+  promotionType?: string;   // Make optional if not always present
 }
 
 export interface AdminUser {
   username: string;
   password: string;
+}
+
+export interface Reservation {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  check_in: string;
+  check_out: string;
+  guests: number;
+  message?: string;
+  room_id?: string;
+  room_name: string;
+  price: number;
+  status: string;
+  created_at?: string;
+  updated_at?: string;
 }

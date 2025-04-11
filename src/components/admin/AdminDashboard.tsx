@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RoomManagement from "./RoomManagement";
 import ServiceManagement from "./ServiceManagement";
-import { Room, Service } from "@/utils/types";
+import ReservationManagement from "./ReservationManagement";
+import { Room, Service, Reservation } from "@/utils/types";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 const AdminDashboard = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [services, setServices] = useState<Service[]>([]);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -70,9 +72,19 @@ const AdminDashboard = () => {
       }, () => loadData())
       .subscribe();
     
+    const reservationsSubscription = supabase
+      .channel('reservations_changes')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'reservations'
+      }, () => loadData())
+      .subscribe();
+    
     return () => {
       supabase.removeChannel(roomsSubscription);
       supabase.removeChannel(servicesSubscription);
+      supabase.removeChannel(reservationsSubscription);
     };
   }, []);
 
@@ -112,6 +124,17 @@ const AdminDashboard = () => {
       }));
       
       setServices(servicesWithDefaults as Service[]);
+      
+      // Load reservations
+      const { data: reservationsData, error: reservationsError } = await supabase
+        .from('reservations')
+        .select('*');
+      
+      if (reservationsError) {
+        throw reservationsError;
+      }
+      
+      setReservations(reservationsData as Reservation[] || []);
     } catch (error: any) {
       toast({
         title: "Erro ao carregar dados",
@@ -136,7 +159,7 @@ const AdminDashboard = () => {
       <div className="flex justify-between items-center mb-10">
         <div>
           <h1 className="text-3xl font-serif font-bold text-navy mb-2">Painel Administrativo</h1>
-          <p className="text-gray-600">Gerencie os quartos e serviços do Hotel Villa Capricho.</p>
+          <p className="text-gray-600">Gerencie os quartos, serviços e reservas do Hotel Villa Capricho.</p>
         </div>
         <Button
           onClick={loadData}
@@ -152,6 +175,7 @@ const AdminDashboard = () => {
         <TabsList className="mb-6">
           <TabsTrigger value="rooms">Quartos</TabsTrigger>
           <TabsTrigger value="services">Serviços</TabsTrigger>
+          <TabsTrigger value="reservations">Reservas</TabsTrigger>
         </TabsList>
         
         <TabsContent value="rooms">
@@ -160,6 +184,10 @@ const AdminDashboard = () => {
         
         <TabsContent value="services">
           <ServiceManagement initialServices={services} />
+        </TabsContent>
+        
+        <TabsContent value="reservations">
+          <ReservationManagement initialReservations={reservations} />
         </TabsContent>
       </Tabs>
     </div>
