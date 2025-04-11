@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Reservation } from "@/utils/types";
 import { getReservations, updateReservationStatus, deleteReservation } from "@/utils/storage";
@@ -29,6 +28,7 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
 import { Eye, Trash2 } from "lucide-react";
+import { formatCurrency } from "../../lib/utils";
 
 interface ReservationManagementProps {
   initialReservations?: Reservation[];
@@ -217,7 +217,7 @@ const ReservationManagement = ({ initialReservations }: ReservationManagementPro
                                     </div>
                                     <div>
                                       <p className="text-sm font-medium text-gray-500">Preço</p>
-                                      <p className="text-lg">{selectedReservation.price} MZN</p>
+                                      <p className="text-lg">{formatCurrency(selectedReservation.price)}</p>
                                     </div>
                                   </div>
                                   {selectedReservation.message && (

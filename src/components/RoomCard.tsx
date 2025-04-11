@@ -1,8 +1,8 @@
-
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Room } from "@/utils/types";
+import { formatCurrency } from "../lib/utils";
 
 interface RoomCardProps {
   room: Room;
@@ -33,7 +33,7 @@ const RoomCard = ({ room, isAdmin = false, onEdit, onDelete }: RoomCardProps) =>
         <div className="flex justify-between items-start mb-2">
           <h3 className="text-xl font-serif font-bold text-navy">{name}</h3>
           <span className="text-gold font-bold">
-            {price} MZN<span className="text-sm text-gray-500">/noite</span>
+            {formatCurrency(price)}<span className="text-sm text-gray-500">/noite</span>
           </span>
         </div>
         

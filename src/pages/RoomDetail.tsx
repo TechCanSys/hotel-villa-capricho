@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -15,6 +14,7 @@ import { getRoomById } from "@/utils/storage";
 import { Room } from "@/utils/types";
 import { ArrowLeft, Users, Bed, Coffee } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { formatCurrency } from "../lib/utils";
 
 const RoomDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -121,7 +121,7 @@ const RoomDetail = () => {
               <div className="flex justify-between items-start mb-4">
                 <h1 className="text-3xl font-serif font-bold text-navy">{room.name}</h1>
                 <div className="text-gold font-bold text-2xl">
-                  {room.price} MZN<span className="text-sm text-gray-500">/noite</span>
+                  {formatCurrency(room.price)}<span className="text-sm text-gray-500">/noite</span>
                 </div>
               </div>
               
