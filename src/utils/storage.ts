@@ -1,4 +1,3 @@
-
 import { Room, Service, Reservation } from './types';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -45,15 +44,12 @@ export const saveRoom = async (room: Room) => {
       if (error) throw error;
       return data as Room;
     } else {
-      // Create new room
-      const newRoom = {
-        ...room,
-        id: Date.now().toString()
-      };
+      // Create new room - remove the empty id property when creating a new room
+      const { id, ...roomWithoutId } = room;
       
       const { data, error } = await supabase
         .from('rooms')
-        .insert([newRoom])
+        .insert([roomWithoutId])
         .select()
         .single();
       

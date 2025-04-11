@@ -101,7 +101,7 @@ export type Database = {
           name: string
           price: number
           promotion: boolean
-          promotiontype: string | null
+          promotionType: string | null
           updated_at: string | null
         }
         Insert: {
@@ -115,7 +115,7 @@ export type Database = {
           name: string
           price: number
           promotion?: boolean
-          promotiontype?: string | null
+          promotionType?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -129,7 +129,7 @@ export type Database = {
           name?: string
           price?: number
           promotion?: boolean
-          promotiontype?: string | null
+          promotionType?: string | null
           updated_at?: string | null
         }
         Relationships: []
