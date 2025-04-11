@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Room } from "@/utils/types";
-import { X, PlusCircle, Upload, Image } from "lucide-react";
+import { X, PlusCircle, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 
@@ -52,7 +52,7 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
     }
     setAmenityInput("");
     setImageUrl("");
-  }, [room]);
+  }, [room, open]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -110,6 +110,16 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
       const filePath = `rooms/${fileName}`;
+      
+      // Check if images bucket exists, if not create it
+      const { data: buckets } = await supabase.storage.listBuckets();
+      const imagesBucket = buckets?.find(b => b.name === 'images');
+      
+      if (!imagesBucket) {
+        await supabase.storage.createBucket('images', {
+          public: true
+        });
+      }
       
       // Upload to Supabase Storage
       const { error: uploadError } = await supabase.storage
@@ -173,14 +183,14 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
         throw new Error("Por favor, preencha todos os campos obrigatórios");
       }
   
+      // Make sure the id is empty string for new rooms
+      const roomToSave = isEditing ? formData : { ...formData, id: "" };
+      console.log("Enviando para salvar:", roomToSave);
+      
       // Call the onSave prop with the form data
-      onSave(formData);
+      onSave(roomToSave);
       
-      // Reset form after successful save
-      setFormData(DEFAULT_ROOM);
-      onClose();
-      
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Erro",
         description: error.message,
@@ -232,7 +242,7 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
                   name="price"
                   type="number"
                   min="0"
-                  step="0.00"
+                  step="0.01"
                   value={formData.price}
                   onChange={handleChange}
                   required
@@ -398,10 +408,6 @@ const AdminRoomForm = ({ room, open, onClose, onSave }: AdminRoomFormProps) => {
               type="submit" 
               className="bg-gold hover:bg-gold-dark" 
               disabled={isUploading || !formData.name || !formData.description || !formData.price || !formData.capacity}
-              onClick={(e) => {
-                console.log('Save button clicked', formData);
-                handleSubmit(e);
-              }}
             >
               {isEditing ? "Atualizar" : "Adicionar"} Quarto
             </Button>
