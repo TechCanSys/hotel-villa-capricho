@@ -2,17 +2,28 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import Hero from "@/components/Hero";
 import ServiceCard from "@/components/ServiceCard";
-import { getServices } from "@/utils/storage";
 import { Service } from "@/utils/types";
+import { getServices } from "@/utils/storage";
 
 const Services = () => {
   const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const allServices = getServices();
-    setServices(allServices);
+    async function fetchServices() {
+      setLoading(true);
+      try {
+        const data = await getServices();
+        setServices(data);
+      } catch (error) {
+        console.error("Error fetching services:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    fetchServices();
   }, []);
 
   return (

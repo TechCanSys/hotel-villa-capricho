@@ -10,8 +10,8 @@ export interface Room {
   featured: boolean;
   created_at?: string;
   updated_at?: string;
-  promotion?: boolean;      // Make optional if not always present
-  promotionType?: string;   // Make optional if not always present
+  promotion?: boolean;
+  promotionType?: string;
 }
 
 export interface Service {
@@ -23,8 +23,8 @@ export interface Service {
   featured: boolean;
   created_at: string;
   updated_at: string;
-  promotion?: boolean;      // Make optional if not always present
-  promotionType?: string;   // Make optional if not always present
+  promotion?: boolean;
+  promotionType?: string;
 }
 
 export interface AdminUser {

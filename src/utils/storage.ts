@@ -175,46 +175,48 @@ export const deleteService = async (id: string): Promise<Service[]> => {
   }
 };
 
-// Reservation functions
+// Reservation functions - Using type assertions to handle tables not recognized by TypeScript
 export const getReservations = async (): Promise<Reservation[]> => {
-  const { data, error } = await supabase
-    .from('reservations')
-    .select('*');
+  try {
+    const { data, error } = await supabase
+      .from('reservations')
+      .select('*');
     
-  if (error) {
+    if (error) throw error;
+    return (data || []) as unknown as Reservation[];
+  } catch (error) {
     console.error('Error fetching reservations:', error);
     return [];
   }
-  
-  return data as Reservation[] || [];
 };
 
 export const getReservationById = async (id: string): Promise<Reservation | undefined> => {
-  const { data, error } = await supabase
-    .from('reservations')
-    .select('*')
-    .eq('id', id)
-    .single();
+  try {
+    const { data, error } = await supabase
+      .from('reservations')
+      .select('*')
+      .eq('id', id)
+      .single();
     
-  if (error) {
+    if (error) throw error;
+    return data as unknown as Reservation;
+  } catch (error) {
     console.error('Error fetching reservation:', error);
     return undefined;
   }
-  
-  return data as Reservation;
 };
 
 export const updateReservationStatus = async (id: string, status: string): Promise<Reservation | null> => {
   try {
     const { data, error } = await supabase
       .from('reservations')
-      .update({ status })
+      .update({ status } as any)
       .eq('id', id)
       .select()
       .single();
-      
+    
     if (error) throw error;
-    return data as Reservation;
+    return data as unknown as Reservation;
   } catch (error) {
     console.error('Error updating reservation status:', error);
     return null;
@@ -227,7 +229,7 @@ export const deleteReservation = async (id: string): Promise<Reservation[]> => {
       .from('reservations')
       .delete()
       .eq('id', id);
-      
+    
     if (error) throw error;
     
     // Fetch updated list
@@ -242,12 +244,12 @@ export const createReservation = async (reservation: Omit<Reservation, 'id' | 'c
   try {
     const { data, error } = await supabase
       .from('reservations')
-      .insert([reservation])
+      .insert([reservation] as any)
       .select()
       .single();
-      
+    
     if (error) throw error;
-    return data as Reservation;
+    return data as unknown as Reservation;
   } catch (error) {
     console.error('Error creating reservation:', error);
     return null;

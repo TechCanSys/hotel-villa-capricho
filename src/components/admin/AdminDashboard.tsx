@@ -125,16 +125,21 @@ const AdminDashboard = () => {
       
       setServices(servicesWithDefaults as Service[]);
       
-      // Load reservations
-      const { data: reservationsData, error: reservationsError } = await supabase
-        .from('reservations')
-        .select('*');
-      
-      if (reservationsError) {
-        throw reservationsError;
+      // Load reservations - use casting due to TypeScript limitations
+      try {
+        const { data: reservationsData, error: reservationsError } = await supabase
+          .from('reservations')
+          .select('*') as { data: Reservation[] | null, error: any };
+        
+        if (reservationsError) {
+          throw reservationsError;
+        }
+        
+        setReservations(reservationsData as Reservation[] || []);
+      } catch (resError) {
+        console.error('Reservations error:', resError);
+        setReservations([]);
       }
-      
-      setReservations(reservationsData as Reservation[] || []);
     } catch (error: any) {
       toast({
         title: "Erro ao carregar dados",

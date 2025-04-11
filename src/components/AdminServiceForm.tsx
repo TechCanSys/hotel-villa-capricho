@@ -26,6 +26,8 @@ const DEFAULT_SERVICE: Service = {
   icon: "utensils",
   featured: false,
   images: [],
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
   promotion: false,
   promotionType: ""
 };

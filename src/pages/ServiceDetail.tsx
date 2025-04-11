@@ -1,8 +1,9 @@
-
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Service } from "@/utils/types";
+import { getServiceById } from "@/utils/storage";
 import { Button } from "@/components/ui/button";
 import { 
   Carousel, 
@@ -11,8 +12,6 @@ import {
   CarouselPrevious, 
   CarouselNext 
 } from "@/components/ui/carousel";
-import { getServiceById } from "@/utils/storage";
-import { Service } from "@/utils/types";
 import { Utensils, Leaf, Waves, Bell, ArrowLeft } from "lucide-react";
 
 const ServiceDetail = () => {
@@ -21,11 +20,22 @@ const ServiceDetail = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (id) {
-      const serviceData = getServiceById(id);
-      setService(serviceData || null);
-      setLoading(false);
+    async function fetchService() {
+      if (id) {
+        setLoading(true);
+        try {
+          const data = await getServiceById(id);
+          setService(data || null);
+        } catch (error) {
+          console.error("Error fetching service:", error);
+          setService(null);
+        } finally {
+          setLoading(false);
+        }
+      }
     }
+    
+    fetchService();
   }, [id]);
 
   const getIcon = (iconName: string) => {
