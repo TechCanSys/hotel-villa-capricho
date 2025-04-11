@@ -1,6 +1,1 @@
 project_id = "ghstvcigcxyjmadrryre"
-
-[migrations]
-# Configuração para migrações do banco de dados
-schema = "public"
-directory = "migrations"

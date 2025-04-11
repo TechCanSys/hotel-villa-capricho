@@ -80,7 +80,7 @@ export const useServiceManagement = (initialServices?: Service[]) => {
             featured: service.featured,
             images: service.images,
             promotion: service.promotion,
-            promotionType: service.promotionType,
+            promotiontype: service.promotionType, // Corrigido para minúsculo conforme definido no banco de dados
           })
           .eq('id', service.id);
         
@@ -107,7 +107,7 @@ export const useServiceManagement = (initialServices?: Service[]) => {
             featured: service.featured,
             images: service.images,
             promotion: service.promotion,
-            promotionType: service.promotionType,
+            promotiontype: service.promotionType, // Corrigido para minúsculo conforme definido no banco de dados
           }])
           .select()
           .single();

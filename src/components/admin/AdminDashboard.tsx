@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RoomManagement from "./RoomManagement";
-import ServiceManagement from "./ServiceManagement";
+import ServiceManagement from "./ServiceManagementv2";
 import ReservationManagement from "./ReservationManagement";
 import { Room, Service, Reservation } from "@/utils/types";
 import { supabase } from "@/integrations/supabase/client";
