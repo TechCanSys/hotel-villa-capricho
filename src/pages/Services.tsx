@@ -35,7 +35,7 @@ const Services = () => {
       <Hero 
         title="Nossos Serviços"
         subtitle="Descubra o conforto e a elegância que tornará sua estadia inesquecível"
-        imageSrc="/images/services-hero.jpg"
+        imagePath="/images/services-hero.jpg"
       />
       
       <div className="container mx-auto px-4 py-16">
